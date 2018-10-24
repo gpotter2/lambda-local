@@ -41,6 +41,8 @@
             'returning. This is false by default because our implementation isn\'t perfect and only "emulates" it.')
         .option('--envdestroy',
             '(optional) Destroy added environment on closing. Defaults to false')
+        .option('--ignore-default-files',
+            '(optional) Do not load ~/.aws/config and ~/.aws/credentials, to avoid collision with AWS')
         .option('-v, --verboselevel <3/2/1/0>',
             '(optional) Default 3. Level 2 dismiss handler() text, level 1 dismiss lambda-local text ' +
             'and level 0 dismiss also the result.')
@@ -60,6 +62,7 @@
         envdestroy = program.envdestroy,
         envfile = program.envfile,
         callbackWaitsForEmptyEventLoop = program.waitEmptyEventLoop,
+        ignoreDefaultFiles = program.ignoreDefaultFiles,
         verboseLevel = program.verboselevel;
     
     if (!lambdaPath || !eventPath) {
@@ -84,11 +87,10 @@
     }
 
     //default callbackWaitsForEmptyEventLoop
-    if (!callbackWaitsForEmptyEventLoop) {
-        callbackWaitsForEmptyEventLoop = false;
-    } else {
-        callbackWaitsForEmptyEventLoop = true;
-    }
+    callbackWaitsForEmptyEventLoop = callbackWaitsForEmptyEventLoop || false
+
+    //default ignoreDefaultFiles
+    ignoreDefaultFiles = ignoreDefaultFiles || false
 
     // timeout milliseconds
     var timeoutMs;
@@ -142,6 +144,7 @@
             environment: environment,
             envdestroy: envdestroy,
             envfile: envfile,
+            ignoreDefaultFiles: ignoreDefaultFiles,
             callback: function(err /*, data */) { //data unused
                 var exec_time = new Date().getTime() - init_time;
                 if (_close_inspector) {
