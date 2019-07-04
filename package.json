@@ -23,7 +23,7 @@
   "dependencies": {
     "aws-sdk": "^2.437.0",
     "commander": "^2.20.0",
-    "dotenv": "^7.0.0",
+    "dotenv": "^8.0.0",
     "mute": "^2.0.6",
     "winston": "^3.2.1"
   },
